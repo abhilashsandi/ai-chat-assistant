@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.0.0">
+  <bpmn:process id="chat-action-approval" name="Chat Action Approval" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1" name="Action Requested">
+      <bpmn:outgoing>Flow_1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:businessRuleTask id="Task_DecideApproval" name="Check Approval Needed">
+      <bpmn:extensionElements>
+        <zeebe:calledDecision decisionId="decision_approval_needed" resultVariable="approvalRequired" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1</bpmn:incoming>
+      <bpmn:outgoing>Flow_2</bpmn:outgoing>
+    </bpmn:businessRuleTask>
+    <bpmn:exclusiveGateway id="Gateway_1" name="Requires Approval?" default="Flow_NotRequires">
+      <bpmn:incoming>Flow_2</bpmn:incoming>
+      <bpmn:outgoing>Flow_Requires</bpmn:outgoing>
+      <bpmn:outgoing>Flow_NotRequires</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="Task_Approve" name="Approve Action">
+      <bpmn:incoming>Flow_Requires</bpmn:incoming>
+      <bpmn:outgoing>Flow_3</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="Task_Execute" name="Execute Action">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="execute-action" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_NotRequires</bpmn:incoming>
+      <bpmn:incoming>Flow_3</bpmn:incoming>
+      <bpmn:outgoing>Flow_4</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="EndEvent_1" name="Action Executed">
+      <bpmn:incoming>Flow_4</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1" sourceRef="StartEvent_1" targetRef="Task_DecideApproval" />
+    <bpmn:sequenceFlow id="Flow_2" sourceRef="Task_DecideApproval" targetRef="Gateway_1" />
+    <bpmn:sequenceFlow id="Flow_Requires" name="Yes" sourceRef="Gateway_1" targetRef="Task_Approve">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=approvalRequired = true</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_NotRequires" name="No" sourceRef="Gateway_1" targetRef="Task_Execute" />
+    <bpmn:sequenceFlow id="Flow_3" sourceRef="Task_Approve" targetRef="Task_Execute" />
+    <bpmn:sequenceFlow id="Flow_4" sourceRef="Task_Execute" targetRef="EndEvent_1" />
+  </bpmn:process>
+</bpmn:definitions>

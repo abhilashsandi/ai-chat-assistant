@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" id="Definitions_0v" name="Approval Decision" namespace="http://camunda.org/schema/1.0/dmn">
+  <decision id="decision_approval_needed" name="Determine if Approval Needed">
+    <decisionTable id="DecisionTable_1" hitPolicy="FIRST">
+      <input id="Input_1" label="Action Name">
+        <inputExpression id="InputExpression_1" typeRef="string">
+          <text>actionName</text>
+        </inputExpression>
+      </input>
+      <input id="Input_2" label="Amount">
+        <inputExpression id="InputExpression_2" typeRef="number">
+          <text>amount</text>
+        </inputExpression>
+      </input>
+      <output id="Output_1" label="Approval Required" name="approvalRequired" typeRef="boolean" />
+      <rule id="Rule_1">
+        <inputEntry id="InputEntry_1">
+          <text>"refund"</text>
+        </inputEntry>
+        <inputEntry id="InputEntry_2">
+          <text>&gt; 50</text>
+        </inputEntry>
+        <outputEntry id="OutputEntry_1">
+          <text>true</text>
+        </outputEntry>
+      </rule>
+      <rule id="Rule_2">
+        <inputEntry id="InputEntry_3">
+          <text>"refund"</text>
+        </inputEntry>
+        <inputEntry id="InputEntry_4">
+          <text>&lt;= 50</text>
+        </inputEntry>
+        <outputEntry id="OutputEntry_2">
+          <text>false</text>
+        </outputEntry>
+      </rule>
+      <rule id="Rule_3">
+        <inputEntry id="InputEntry_5">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="InputEntry_6">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="OutputEntry_3">
+          <text>false</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+</definitions>

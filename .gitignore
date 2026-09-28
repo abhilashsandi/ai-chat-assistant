@@ -1,0 +1,11 @@
+node_modules/
+dist/
+build/
+.env
+.env.local
+*.log
+
+# local dev tooling / large local-only bundles, not part of source
+.playwright-mcp/
+camunda8-run/
+camunda8-run.zip
